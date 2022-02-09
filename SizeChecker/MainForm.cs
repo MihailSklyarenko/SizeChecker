@@ -83,7 +83,7 @@ namespace SizeChecker
 
             foreach (var file in filesWithFolders.Files)
             {
-                ListViewItem lvi = new ListViewItem(file.Name);
+                ListViewItem lvi = new ListViewItem($"{file.Name}.{file.Extension}");
                 lvi.Tag = file.FullName;
                 lvi.SubItems.Add(file.Size.ToString());
                 mainListView.Items.Add(lvi);
