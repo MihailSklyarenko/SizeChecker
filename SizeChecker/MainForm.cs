@@ -47,22 +47,11 @@ namespace SizeChecker
         {
             node.Nodes.Clear();
 
-            DirectoryInfo[] directories;
-            string fullPath = node.FullPath;
-            DirectoryInfo directory = new DirectoryInfo(fullPath);
+            var directories = _mainViewModel.GetDirectories(node.FullPath);
 
-            try
+            foreach (string dirinfo in directories)
             {
-                directories = directory.GetDirectories();
-            }
-            catch
-            {
-                return;
-            }
-
-            foreach (DirectoryInfo dirinfo in directories)
-            {
-                TreeNode dir = new TreeNode(dirinfo.Name);
+                TreeNode dir = new TreeNode(dirinfo);
                 node.Nodes.Add(dir);
             }
         }
@@ -79,76 +68,27 @@ namespace SizeChecker
             mainTreeView.EndUpdate();
         }
 
-        private void mainTreeView_AfterSelect(object sender, TreeViewEventArgs e)
+        private async void mainTreeView_AfterSelect(object sender, TreeViewEventArgs e)
         {
-            TreeNode selectedNode = e.Node;
-            var fullPath = selectedNode.FullPath;
-
-            DirectoryInfo directoryInfo = new DirectoryInfo(fullPath);
-            FileInfo[] files;
-            DirectoryInfo[] directories;
-
-            try
-            {
-                files = directoryInfo.GetFiles();
-                directories = directoryInfo.GetDirectories();
-            }
-            catch
-            {
-                return;
-            }
-
             mainListView.Items.Clear();
+            var filesWithFolders = await Task.Run( () => _mainViewModel.GetDirectoriesWithFiles(e.Node.FullPath));
 
-            foreach (DirectoryInfo dirInfo in directories)
+            foreach (var folder in filesWithFolders.Folders)
             {
-                ListViewItem lvi = new ListViewItem(dirInfo.Name);
-
-                double size = 0;
-                Task.Run(() => GetDirectorySize(fullPath, ref size));
-                lvi.SubItems.Add(size.ToString());
-
+                ListViewItem lvi = new ListViewItem(folder.Name);
+                lvi.SubItems.Add(folder.Size.ToString());
                 mainListView.Items.Add(lvi);
             }
 
 
-            foreach (FileInfo fileInfo in files)
+            foreach (var file in filesWithFolders.Files)
             {
-                ListViewItem lvi = new ListViewItem(fileInfo.Name);
-                lvi.Tag = fileInfo.FullName;
-                lvi.Tag = fileInfo.FullName;
-                lvi.SubItems.Add(fileInfo.Length.ToString());
-
-                string filenameExtension =
-                  Path.GetExtension(fileInfo.Name).ToLower();
+                ListViewItem lvi = new ListViewItem(file.Name);
+                lvi.Tag = file.FullName;
+                lvi.SubItems.Add(file.Size.ToString());
                 mainListView.Items.Add(lvi);
             }
-        }
-
-        private double GetDirectorySize(string currentFolder, ref double catalogSizeInBytes)
-        {
-            try
-            {
-                DirectoryInfo directoryInfo = new DirectoryInfo(currentFolder);
-                DirectoryInfo[] directories = directoryInfo.GetDirectories();
-                FileInfo[] files = directoryInfo.GetFiles();
-                foreach (FileInfo file in files)
-                {
-                    catalogSizeInBytes = catalogSizeInBytes + file.Length;
-                }
-
-                foreach (DirectoryInfo subfolders in directories)
-                {
-                    GetDirectorySize(subfolders.FullName, ref catalogSizeInBytes);
-                }
-                var result = Math.Round((double)(catalogSizeInBytes / 1024 / 1024 / 1024), 2);
-                return result;
-            }
-            catch(Exception)
-            {
-                return 0;
-            }
-        }
+        }        
 
     }
 }
