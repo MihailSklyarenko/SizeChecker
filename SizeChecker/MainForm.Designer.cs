@@ -34,29 +34,37 @@
             // 
             // mainTreeView
             // 
-            this.mainTreeView.Location = new System.Drawing.Point(12, 12);
+            this.mainTreeView.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left)));
+            this.mainTreeView.Location = new System.Drawing.Point(9, 10);
+            this.mainTreeView.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.mainTreeView.Name = "mainTreeView";
-            this.mainTreeView.Size = new System.Drawing.Size(217, 426);
+            this.mainTreeView.Size = new System.Drawing.Size(164, 347);
             this.mainTreeView.TabIndex = 0;
             this.mainTreeView.BeforeExpand += new System.Windows.Forms.TreeViewCancelEventHandler(this.mainTreeView_BeforeExpand);
             this.mainTreeView.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.mainTreeView_AfterSelect);
             // 
             // mainListView
             // 
+            this.mainListView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.mainListView.HideSelection = false;
-            this.mainListView.Location = new System.Drawing.Point(235, 12);
+            this.mainListView.Location = new System.Drawing.Point(176, 10);
+            this.mainListView.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.mainListView.Name = "mainListView";
-            this.mainListView.Size = new System.Drawing.Size(553, 426);
+            this.mainListView.Size = new System.Drawing.Size(416, 347);
             this.mainListView.TabIndex = 1;
             this.mainListView.UseCompatibleStateImageBehavior = false;
             // 
             // MainForm
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(800, 450);
+            this.ClientSize = new System.Drawing.Size(600, 366);
             this.Controls.Add(this.mainListView);
             this.Controls.Add(this.mainTreeView);
+            this.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.Name = "MainForm";
             this.Text = "Size Checker";
             this.Load += new System.EventHandler(this.MainForm_Load);
