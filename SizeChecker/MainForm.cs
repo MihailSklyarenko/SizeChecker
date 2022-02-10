@@ -1,8 +1,6 @@
 ﻿using SizeChecker.Interfaces.MainForm;
 using SizeChecker.ViewModels.MainForm;
 using System;
-using System.IO;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace SizeChecker
@@ -71,7 +69,7 @@ namespace SizeChecker
         private async void mainTreeView_AfterSelect(object sender, TreeViewEventArgs e)
         {
             mainListView.Items.Clear();
-            var filesWithFolders = await Task.Run( () => _mainViewModel.GetDirectoriesWithFiles(e.Node.FullPath));
+            var filesWithFolders = await _mainViewModel.GetDirectoriesWithFiles(e.Node.FullPath);
 
             foreach (var folder in filesWithFolders.Folders)
             {

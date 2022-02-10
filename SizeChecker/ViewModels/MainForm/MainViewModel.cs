@@ -71,48 +71,51 @@ namespace SizeChecker.ViewModels.MainForm
         private double BytesToGigabytes(double bytes) => Math.Round((double)(bytes / 1024 / 1024 / 1024), 2);
         private double BytesToMegabytes(double bytes) => Math.Round((double)(bytes / 1024 / 1024), 2);
 
-        public FilesWithFolders GetDirectoriesWithFiles(string fullPathToDirectory)
+        public Task<FilesWithFolders> GetDirectoriesWithFiles(string fullPathToDirectory)
         {
-            FilesWithFolders result = new FilesWithFolders();
-
-            DirectoryInfo directoryInfo = new DirectoryInfo(fullPathToDirectory);
-            FileInfo[] files;
-            DirectoryInfo[] directories;
-
-            try
+            return Task.Run(() =>
             {
-                files = directoryInfo.GetFiles();
-                directories = directoryInfo.GetDirectories();
-            }
-            catch
-            {
-                return result;
-            }
+                FilesWithFolders result = new FilesWithFolders();
 
-            foreach (DirectoryInfo dirInfo in directories)
-            {
-                double size = 0;
-                GetDirSize(fullPathToDirectory, ref size);
+                DirectoryInfo directoryInfo = new DirectoryInfo(fullPathToDirectory);
+                FileInfo[] files;
+                DirectoryInfo[] directories;
 
-                result.Folders.Add(new Element() 
-                { 
-                    Name = dirInfo.Name,                     
-                    Size = $"{BytesToGigabytes(size)} GB"
-                });
-            }
-               
-            foreach (FileInfo fileInfo in files)
-            {
-                result.Files.Add(new Models.MainForm.File()
+                try
                 {
-                    Name = fileInfo.Name,
-                    FullName = fileInfo.FullName,
-                    Size = $"{BytesToMegabytes(fileInfo.Length)} MB",
-                    Extension = fileInfo.Extension
-                });
-            }
+                    files = directoryInfo.GetFiles();
+                    directories = directoryInfo.GetDirectories();
+                }
+                catch
+                {
+                    return result;
+                }
 
-            return result;
+                foreach (DirectoryInfo dirInfo in directories)
+                {
+                    double size = 0;
+                    GetDirSize(dirInfo.FullName, ref size);
+
+                    result.Folders.Add(new Element()
+                    {
+                        Name = dirInfo.Name,
+                        Size = $"{BytesToGigabytes(size)} GB"
+                    });
+                }
+
+                foreach (FileInfo fileInfo in files)
+                {
+                    result.Files.Add(new Models.MainForm.File()
+                    {
+                        Name = fileInfo.Name,
+                        FullName = fileInfo.FullName,
+                        Size = $"{BytesToMegabytes(fileInfo.Length)} MB",
+                        Extension = fileInfo.Extension
+                    });
+                }
+
+                return result;
+            });
         }               
     }
 }

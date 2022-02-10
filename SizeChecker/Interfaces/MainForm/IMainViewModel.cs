@@ -9,6 +9,6 @@ namespace SizeChecker.Interfaces.MainForm
         string[] GetAllDrives();
         List<string> GetDirectories(string fullPathToDirectory);
         Task<double> GetDirectorySize(string currentFolder);
-        FilesWithFolders GetDirectoriesWithFiles(string fullPathToDirectory);
+        Task<FilesWithFolders> GetDirectoriesWithFiles(string fullPathToDirectory);
     }
 }
